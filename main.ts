@@ -20,19 +20,32 @@ document.body.appendChild(renderer.domElement);
 const earthTexture = new Three.TextureLoader().load("Assets/earth.jpeg");
 const moonTexture = new Three.TextureLoader().load("Assets/moon.jpg");
 const sunTexture = new Three.TextureLoader().load("Assets/sun.jpg");
+const jupiterTexture = new Three.TextureLoader().load("Assets/jupiter.png");
+const marsTexture = new Three.TextureLoader().load("Assets/mars.jpg");
+const titanTexture = new Three.TextureLoader().load("Assets/titan.png");
+const uranusTexture = new Three.TextureLoader().load("Assets/uranus.png");
+
 
 // Add Objects to the scene
 //const geometry = new Three.BoxGeometry();
-const earthGeometry = new Three.SphereGeometry(5, 60, 60);
+const earthGeometry = new Three.SphereGeometry(5, 20, 20);
 const moonGeometry = new Three.SphereGeometry(1, 20, 20);
-const sunGeometry = new Three.SphereGeometry(10, 60, 60);
+const sunGeometry = new Three.SphereGeometry(10, 20, 20);
+const jupiterGeometry = new Three.SphereGeometry(8, 20, 20);
+const marsGeometry = new Three.SphereGeometry(3, 20, 20);
+const titanGeometry = new Three.SphereGeometry(8, 20, 20);
+const uranusGeometry = new Three.SphereGeometry(6, 20, 20);
+
 
 //const material = new Three.MeshBasicMaterial({ color: 0x840255 });
 //const circleMaterial = new Three.MeshStandardMaterial({color: 0xFFFF00})
 const earthMaterial = new Three.MeshStandardMaterial({map: earthTexture});
 const moonMaterial = new Three.MeshStandardMaterial({map: moonTexture});
 const sunMaterial = new Three.MeshStandardMaterial({map: sunTexture});
-
+const jupiterMaterial = new Three.MeshStandardMaterial({map: jupiterTexture});
+const marsMaterial = new Three.MeshStandardMaterial({map: marsTexture});
+const titanMaterial = new Three.MeshStandardMaterial({map: titanTexture});
+const uranusMaterial = new Three.MeshStandardMaterial({map: uranusTexture});
 //const capsuleGeometry = new Three.TorusGeometry();
 //const capsuleMaterial  = new Three.MeshStandardMaterial({color:0x262677/*, wireframe:true*/});
 //const capsuleObject =  new Three.Mesh(capsuleGeometry, capsuleMaterial);
@@ -44,18 +57,31 @@ const earth = new Three.Mesh(earthGeometry, earthMaterial);
 const moon = new Three.Mesh(moonGeometry, moonMaterial);
 const moon2 = new Three.Mesh(moonGeometry, moonMaterial);
 const sun = new Three.Mesh(sunGeometry,sunMaterial);
+const jupiter = new Three.Mesh(jupiterGeometry, jupiterMaterial);
+const mars = new Three.Mesh(marsGeometry, marsMaterial);
+const titan = new Three.Mesh(titanGeometry, titanMaterial);
+const uranus = new Three.Mesh(uranusGeometry, uranusMaterial);
+
 
 
 earth.position.add(new Three.Vector3(3,7,0));
 moon.position.add(new Three.Vector3(11,9,0));
 moon2.position.add(new Three.Vector3(-9,20,3));
 sun.position.add(new Three.Vector3(-22, 19, -17));
+jupiter.position.add(new Three.Vector3(65, 9, -17));
+mars.position.add(new Three.Vector3(30, 8, -17));
+//uranus.position.add(new Three.Vector3(-22, 19, -17));
+
+
 
 scene.add(earth);
 scene.add(moon);
 scene.add(moon2);
 scene.add(sun);;
-
+scene.add(jupiter);
+scene.add(mars);;
+//scene.add(titan);;
+//scene.add(uranus);;
 
 
 // Add lights
