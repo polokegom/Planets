@@ -17,6 +17,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 //Planet Texture
 
+const planeGeometry = new Three.PlaneGeometry(100,100);
+
 const earthTexture = new Three.TextureLoader().load("Assets/earth.jpeg");
 const moonTexture = new Three.TextureLoader().load("Assets/moon.jpg");
 const sunTexture = new Three.TextureLoader().load("Assets/sun.jpg");
@@ -45,7 +47,8 @@ const sunMaterial = new Three.MeshStandardMaterial({map: sunTexture});
 const jupiterMaterial = new Three.MeshStandardMaterial({map: jupiterTexture});
 const marsMaterial = new Three.MeshStandardMaterial({map: marsTexture});
 const titanMaterial = new Three.MeshStandardMaterial({map: titanTexture});
-const uranusMaterial = new Three.MeshStandardMaterial({map: uranusTexture});
+const uranusMaterial = new Three.MeshBasicMaterial({map: uranusTexture});
+const colorMaterial = new Three.MeshStandardMaterial({color: 0xFFFFFF});
 //const capsuleGeometry = new Three.TorusGeometry();
 //const capsuleMaterial  = new Three.MeshStandardMaterial({color:0x262677/*, wireframe:true*/});
 //const capsuleObject =  new Three.Mesh(capsuleGeometry, capsuleMaterial);
@@ -61,7 +64,7 @@ const jupiter = new Three.Mesh(jupiterGeometry, jupiterMaterial);
 const mars = new Three.Mesh(marsGeometry, marsMaterial);
 const titan = new Three.Mesh(titanGeometry, titanMaterial);
 const uranus = new Three.Mesh(uranusGeometry, uranusMaterial);
-
+const plane = new Three.Mesh(planeGeometry,colorMaterial);
 
 
 earth.position.add(new Three.Vector3(3,7,0));
@@ -70,16 +73,28 @@ moon2.position.add(new Three.Vector3(-9,20,3));
 sun.position.add(new Three.Vector3(-22, 19, -17));
 jupiter.position.add(new Three.Vector3(65, 9, -17));
 mars.position.add(new Three.Vector3(30, 8, -17));
+//plane.position.add(new Three.Vector3(30, 8, -17));
+
+plane.rotation.x = -0.5*Math.PI;
 //uranus.position.add(new Three.Vector3(-22, 19, -17));
-
-
-
+plane.receiveShadow = true;
+earth.castShadow = true;
+const dirLight = new Three.DirectionalLight(0xFFFFFF,0.9)
+dirLight.position.add(new Three.Vector3(16,20,0));
+dirLight.castShadow = true;
+dirLight.shadow.camera.top= 10;
+const dirLightHelper = new Three.DirectionalLightHelper(dirLight,10);
+const cameraHelper = new Three.CameraHelper(dirLight.shadow.camera);
+scene.add(dirLightHelper);
+scene.add(cameraHelper);
 scene.add(earth);
 scene.add(moon);
 scene.add(moon2);
 scene.add(sun);;
 scene.add(jupiter);
-scene.add(mars);;
+scene.add(mars);
+scene.add(plane);
+
 //scene.add(titan);;
 //scene.add(uranus);;
 
@@ -87,12 +102,13 @@ scene.add(mars);;
 // Add lights
 const ambientLight = new Three.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
+scene.add(dirLight);
 
 const pointLight = new Three.PointLight(0xffffff, 60);
 pointLight.position.set(5, 5,5);
 //scene.add(pointLight);
-const gridHelper = new Three.GridHelper(40,100);
-scene.add(gridHelper);
+const gridHelper = new Three.GridHelper(80,100);
+//scene.add(gridHelper);
 //scene.add(pointLightHelper);
 const controls = new OrbitControls(camera,renderer.domElement);
 // Animation
