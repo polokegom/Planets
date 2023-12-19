@@ -7,7 +7,7 @@ const scene = new Three.Scene();
 const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 35;
 camera.position.y = 35;
-camera.position.x = -36;
+camera.position.x = -86;
 
 const renderer = new Three.WebGLRenderer();
 renderer.shadowMap.enabled = true;
@@ -64,68 +64,6 @@ sun.position.add(new Three.Vector3(0, 0, 0));
 scene.add(sun);
 //scene.add(meshStars);
 
-
-// Add Objects to the scene
-//const geometry = new Three.BoxGeometry();
-/*
-const earthGeometry = new Three.SphereGeometry(5, 20, 20);
-const moonGeometry = new Three.SphereGeometry(1, 20, 20);
-const sunGeometry = new Three.SphereGeometry(10, 20, 20);
-const jupiterGeometry = new Three.SphereGeometry(8, 20, 20);
-const marsGeometry = new Three.SphereGeometry(3, 20, 20);
-const titanGeometry = new Three.SphereGeometry(8, 20, 20);
-const uranusGeometry = new Three.SphereGeometry(6, 20, 20);
-
-
-//const material = new Three.MeshBasicMaterial({ color: 0x840255 });
-//const circleMaterial = new Three.MeshStandardMaterial({color: 0xFFFF00})
-const earthMaterial = new Three.MeshStandardMaterial({map:  new Three.TextureLoader().load("Assets/earth.jpeg")});
-const moonMaterial = new Three.MeshStandardMaterial({map: new Three.TextureLoader().load("Assets/moon.jpg")});
-const sunMaterial = new Three.MeshStandardMaterial({map: new Three.TextureLoader().load("Assets/sun.jpg")});
-const jupiterMaterial = new Three.MeshStandardMaterial({map: new Three.TextureLoader().load("Assets/jupiter.png")});
-const marsMaterial = new Three.MeshStandardMaterial({map: new Three.TextureLoader().load("Assets/mars.jpg")});
-const titanMaterial = new Three.MeshStandardMaterial({map: new Three.TextureLoader().load("Assets/titan.png")});
-const uranusMaterial = new Three.MeshBasicMaterial({map: new Three.TextureLoader().load("Assets/uranus.png")});
-*/
-
-//const capsuleGeometry = new Three.TorusGeometry();
-//const capsuleMaterial  = new Three.MeshStandardMaterial({color:0x262677/*, wireframe:true*/});
-//const capsuleObject =  new Three.Mesh(capsuleGeometry, capsuleMaterial);
-///const cube = new Three.Mesh(geometry, material);
-//scene.add(cube); 
-//scene.add(capsuleObject);
-//Texture Mapping
-/*const earth = new Three.Mesh(earthGeometry, earthMaterial);
-const moon = new Three.Mesh(moonGeometry, moonMaterial);
-const moon2 = new Three.Mesh(moonGeometry, moonMaterial);
-const sun = new Three.Mesh(sunGeometry,sunMaterial);
-const jupiter = new Three.Mesh(jupiterGeometry, jupiterMaterial);
-const mars = new Three.Mesh(marsGeometry, marsMaterial);
-const titan = new Three.Mesh(titanGeometry, titanMaterial);
-const uranus = new Three.Mesh(uranusGeometry, uranusMaterial);
-
-
-earth.position.add(new Three.Vector3(3,7,0));
-moon.position.add(new Three.Vector3(11,9,0));
-moon2.position.add(new Three.Vector3(-9,20,3));
-sun.position.add(new Three.Vector3(-22, 19, -17));
-jupiter.position.add(new Three.Vector3(65, 9, -17));
-mars.position.add(new Three.Vector3(30, 8, -17));
-//plane.position.add(new Three.Vector3(30, 8, -17));
-
-plane.rotation.x = -0.5*Math.PI;
-//uranus.position.add(new Three.Vector3(-22, 19, -17));
-plane.receiveShadow = true;
-earth.castShadow = true;
-
-scene.add(earth);
-scene.add(moon);
-scene.add(moon2);
-;
-scene.add(jupiter);
-scene.add(mars);
-scene.add(plane);*/
-
 //Light
 const dirLight = new Three.DirectionalLight(0xFFFFFF,0.9)
 dirLight.position.add(new Three.Vector3(16,20,0));
@@ -144,10 +82,10 @@ function vecMinus(vec1: Three.Vector3, vec2: Three.Vector3): Three.Vector3{
   return new Three.Vector3(vec1.x- vec2.x, vec1.y - vec2.y,vec1.z - vec2.z);
 }
 
-function addNewPlanet(loci: Three.Mesh, radius: any, pos: Three.Vector3, texturePlanet: Three.Texture): any {
+function addNewPlanet(radius: any, pos: Three.Vector3, texturePlanet: Three.Texture): any {
 
   const orbital = new Three.Object3D();
-  orbital.position.add(sunWorldPos);
+  orbital.position.add(sun.position.clone());
   const geoPlanet = new Three.SphereGeometry(radius, 15, 15);
   const matPlanet = new Three.MeshStandardMaterial({map: texturePlanet});
   const meshPlanet = new Three.Mesh(geoPlanet,matPlanet);
@@ -159,15 +97,39 @@ function addNewPlanet(loci: Three.Mesh, radius: any, pos: Three.Vector3, texture
 }
 
 
-const earth = addNewPlanet(sun,5,new Three.Vector3(93,7,0),  new Three.TextureLoader().load("Assets/earth.jpeg"));
-const moon = addNewPlanet(sun, 2, new Three.Vector3(101,9,0),  new Three.TextureLoader().load("Assets/moon.jpg"));
+function addNewMoon(planet: Three.Mesh, radius: any, pos: Three.Vector3, textureMoon: Three.Texture): any {
+
+  const planetOrbital = new Three.Object3D();
+  const moonOrbital = new Three.Object3D();
+
+  planetOrbital.position.add(sun.position.clone());
+  moonOrbital.position.add(planet.position.clone());
+
+  const geoMoon = new Three.SphereGeometry(radius, 15, 15);
+  const matMoon = new Three.MeshStandardMaterial({map: textureMoon});
+  const meshMoon = new Three.Mesh(geoMoon,matMoon);
+
+  planetOrbital.add(moonOrbital)
+  moonOrbital.add(meshMoon)
+/**/
+  //scene.add(planetOrbital);
+  scene.add(moonOrbital);
+
+  return {meshMoon,planetOrbital, moonOrbital}; 
+}
+
+
+const earth = addNewPlanet(5,new Three.Vector3(93,7,0),  new Three.TextureLoader().load("Assets/earth.jpeg"));
+const moon = addNewPlanet(2, new Three.Vector3(101,9,0),  new Three.TextureLoader().load("Assets/moon.jpg"));
+//const moon2 = addNewMoon(earth.meshPlanet,2, new Three.Vector3(13,9,0),  new Three.TextureLoader().load("Assets/moon.jpg"));
+
 //const moon2 = addNewPlanet(sun, 2, new Three.Vector3(81,20,3),  new Three.TextureLoader().load("Assets/moon.jpg"));
-const venus = addNewPlanet(sun,4,new Three.Vector3(43,7,0),  new Three.TextureLoader().load("Assets/venus3.jpg"));
-const mercury = addNewPlanet(sun,4,new Three.Vector3(73,7,0),  new Three.TextureLoader().load("Assets/mercury.jpg"));
-const saturn = addNewPlanet(sun,7,new Three.Vector3(205,7,0),  new Three.TextureLoader().load("Assets/saturn.jpg"));
-const uranus = addNewPlanet(sun,6, new Three.Vector3(245, 9, -17),  new Three.TextureLoader().load("Assets/uranus.png"));
-const jupiter = addNewPlanet(sun, 10, new Three.Vector3(155, 9, -17),  new Three.TextureLoader().load("Assets/jupiter.png"));
-const mars = addNewPlanet(sun, 3, new Three.Vector3(120, 8, -17),  new Three.TextureLoader().load("Assets/mars.jpg"));
+const venus = addNewPlanet(4,new Three.Vector3(43,7,0),  new Three.TextureLoader().load("Assets/venus3.jpg"));
+const mercury = addNewPlanet(4,new Three.Vector3(73,7,0),  new Three.TextureLoader().load("Assets/mercury.jpg"));
+const saturn = addNewPlanet(7,new Three.Vector3(205,7,0),  new Three.TextureLoader().load("Assets/saturn.jpg"));
+const uranus = addNewPlanet(6, new Three.Vector3(245, 9, -17),  new Three.TextureLoader().load("Assets/uranus.png"));
+const jupiter = addNewPlanet( 10, new Three.Vector3(155, 9, -17),  new Three.TextureLoader().load("Assets/jupiter.png"));
+const mars = addNewPlanet( 3, new Three.Vector3(120, 8, -17),  new Three.TextureLoader().load("Assets/mars.jpg"));
 saturn.meshPlanet.add(meshRing);
 
 
@@ -200,6 +162,8 @@ const animate = function () {
 
     earth.meshPlanet.rotation.y  += 0.01;
     earth.orbital.rotation.y  += 0.003;
+    //moon2.planetOrbital.rotation.y += 0.003;
+    //moon2.moonOrbital.rotation.y += 0.01;
     moon.orbital.rotation.y  += 0.003;
   //  moon2.orbital.rotation.y  += 0.003;
     mars.orbital.rotation.y += 0.001;
